@@ -47,7 +47,7 @@ sys/          system       system_a594cbfb       system endpoints used for contr
 (main) expert@expert-cws:~$ 
 ```
 
-Notice, we have two new paths for `kv` secret engine are ebaled, thought the type showing same but we can also check via UI to verify they have different versions. 
+Notice, we have two new paths for `kv` secret engine are ebaled, though the type showing same but we can also check via UI to verify they have different versions. 
 
 ![App Screenshot](images/kv_secret_engines.png) 
 
@@ -55,7 +55,7 @@ Here you can see 'dev-creds' showing v2.
 
 ### Storing Secrets(device credentials) inside KV Secret Engine using kv-v1 and kv-v2
 
-Add new secrets under the newly created path 'lab-creds' and name iosxe-creds and iosxr-creds with the username and password key value pairs. This uses kv secret engine version1.
+Add new secrets under the newly created path 'lab-creds' and name them as `iosxe-creds` and `iosxr-creds` with the username and password key value pairs. This uses kv secret engine version1.
 
 ```bash
 (main) expert@expert-cws:~$ vault kv put lab-creds/iosxe-creds username=admin password=C1sco123
@@ -65,9 +65,9 @@ Success! Data written to: lab-creds/iosxr-creds
 (main) expert@expert-cws:~$ 
 ```
 
-Let's add another secret under kv secret engine path 'dev-creds' which uses version2. 
+Let's add another secret under kv secret engine path `dev-creds` which uses version2. 
 
-```
+```bash
 (main) expert@expert-cws:~$ vault kv put dev-creds/nxos-creds username=cisco password=cisco
 Key              Value
 ---              -----
@@ -78,9 +78,9 @@ version          1
 (main) expert@expert-cws:~$ 
 ```
 
-You can see the difference in the both secret engine versions output, kv secret engine version2 shows detailed output and also showing version of the secret which is difference between kv-v1 and kv-v2. Do not confuse with this `version 1` in the above output as this is showing the version of the secret(credentials) we created just now and will be version controlled as we make changes to this secret. This is not `kv` secret engine version.
+You can see the difference in the both secret engine versions output, kv secret engine version2 shows detailed output and also showing version of the secret which is one of the  difference between kv-v1 and kv-v2. Do not confuse with this `version 1` in the above output as this is showing the version of the secret(credentials) we created just now and will be version controlled as we make changes to this secret. This is not `kv` secret engine version.
 
-### Showing the secrets via kv get command 
+### Showing the secrets via `kv get` command 
 
 ```bash
 (main) expert@expert-cws:~$ vault kv get lab-creds/iosxe-creds
@@ -97,18 +97,21 @@ password    C1sco123
 username    admin
 ```
 
-You can also use `-output-curl-string` command to print an equivalent cURL command string for any vault command which will be helpful for the API call. 
+You can also use `-output-curl-string` command to print an equivalent cURL command string for any vault command, which will be helpful for the API call. 
 
+```bash
 (main) expert@expert-cws:~$ vault kv get -output-curl-string lab-creds/iosxr-creds
 curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://127.0.0.1:8200/v1/lab-creds/iosxr-creds
 (main) expert@expert-cws:~$ 
 (main) expert@expert-cws:~$ vault kv get -output-curl-string dev-creds/nxos-creds
 curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://127.0.0.1:8200/v1/dev-creds/data/nxos-creds
 (main) expert@expert-cws:~$
+```
 
 Use these output of the cURL command and a run GET API request to retrieve the secrets. which can be useful if you are writing a python scripts and use this API call to retrieve the secrets and use them to access the device. 
 
 kv version 1 API call 
+
 ```bash
 (main) expert@expert-cws:~$ curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://127.0.0.1:8200/v1/lab-creds/iosxr-creds | jq
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -131,6 +134,7 @@ kv version 1 API call
 ```
 
 kv version 2 API call 
+
 ```bash
 (main) expert@expert-cws:~$ curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://127.0.0.1:8200/v1/dev-creds/data/nxos-creds | jq
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -177,27 +181,33 @@ Keys
 ----
 nxos-creds
 (main) expert@expert-cws:~$ 
-
 ```
 
 You also use `json` output format along with `json query | jq` to display the colorful output.
 
+```bash
 (main) expert@expert-cws:~$ vault kv get -version=1 -format=json dev-creds/nxos-creds | jq
 (main) expert@expert-cws:~$ vault kv get -format=json lab-creds/iosxe-creds | jq
+```
 
 ![App Screenshot](images/secret_json_1.png) 
 ![App Screenshot](images/secret_json_2.png) 
-S
+
 If you are interested to see the meta data for the secrets, run the following command, please note, this only works with version 2. You can see the in the blow output for the kv-v1 output `Metadata not supported on KV Version 1`
 
+```bash
 (main) expert@expert-cws:~$ vault kv metadata get -format=json dev-creds/nxos-creds  | jq
 (main) expert@expert-cws:~$ vault kv metadata get -format=json lab-creds/iosxe-creds  | jq
+```
 
 ![App Screenshot](images/secret_meta.png) 
 
 ### Deleting/destroying the secrets 
 
-
+```
+$ vault kv delete lab-creds/iosxr
+$ vault kv delete -path=database-creds kv
+```
 
 ### kv secrets engine - version 1 vs 2
 
@@ -207,13 +217,13 @@ Use the vault kv _<subcommand_> [options] [args] command to interact with K/V se
 
 | Subcommand        | kv v1	| kv v2	| Description                                           |
 |:-----------------:|:-----:|:------|:-----------------------------------------------------:|
-| delete	        | x	    | x	    | Delete versions of secrets stored in K/V              |
-| destroy		    |       | x	    | Permanently remove one or more versions of secrets    |
-| enable-versioning	|	    | x	    | Turns on versioning for an existing K/V v1 store      |
-| get	            | x	    | x	    | Retrieve data                                         |
+| delete	          | x	    | x	    | Delete versions of secrets stored in K/V              |
+| destroy		        |       | x	    | Permanently remove one or more versions of secrets    |
+| enable-versioning	|	      | x	    | Turns on versioning for an existing K/V v1 store      |
+| get	              | x	    | x	    | Retrieve data                                         |
 | list	            | x	    | x	    | List data or secrets                                  |
-| metadata		    |       | x	    | Interact with Vault's Key-Value storage               | 
-| patch	    	    |       | x	    | Update secrets without overwriting existing secrets   |
+| metadata		      |       | x	    | Interact with Vault's Key-Value storage               | 
+| patch	    	      |       | x	    | Update secrets without overwriting existing secrets   |
 
 In addition, KV v2 has additional subcommands that are not available for KV v1.
 

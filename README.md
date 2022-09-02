@@ -16,7 +16,7 @@ I am going to use `Vault` without TLS in this example, however you should be usi
 
 Fortunately, Vault is already installed on DevNet CWS, all you have to do it, run the service on demand, dev mode or create a service. 
 
-### Running Vault manually
+### Running Vault manually with config file
 ```bash
 $ vault server -config=/etc/vault.d/vault.hcl
 ```
@@ -25,12 +25,12 @@ check out my [vault.hcl](vault_config_files/vault.hcl) file.
 
 You may also run the Vault in Dev envrionment mode, which will provide you the unseal key and root token. Keep in mind, running Vault in dev mode changes root token every time you start the server. Hence, you may need to re-add the environment variable for root token (VAULT_TOKEN) every time you restart the server in dev mode. This is very useful if you are only testing for learning purpose. 
 
-### Running Vault in dev server mode.
+### Running Vault in Dev Server Mode
 ```bash
 $ vault server -dev
 ```
 
-### Running Vault as a service
+### Running Vault as a Service
 
 Create a `vault.service` file and place it into the `/etc/systemd/system`
 
@@ -69,7 +69,7 @@ Move the `vault.service` to system deamon directory
 (main) expert@expert-cws:~$ mv vault.service /etc/systemd/system/
 ```
 
-### Start the vault service and check the status 
+#### Start the vault service and check the status 
 
 ```bash
 (main) expert@expert-cws:~$ sudo systemctl start vault.service
@@ -124,7 +124,7 @@ delete             enable-versioning  list               patch              roll
 destroy            get                metadata           put                undelete   
 ```
 
-### Export vault environmental variables 
+#### Export vault environmental variables 
 
 To set the variables for current session 
 ```bash
@@ -214,9 +214,9 @@ Finally if you browse to the url http://127.0.0.1:8200, you will see the followi
 
 You can either intialize the Vault via Web UI or CLI, to intialize the Vault via Web UI, Enter 5 in the 'Key shares' and 3 in the 'Key threshold'. This is a standard to split the master key into 5 shares and can be reconstructed with 3 keys. Once you enter the values and click 'Initialize', it will pop up a file to download with these keys information, this is an important file, keep it in a safe place and it will be needed to unseal the Vault. 
 
-### Intialize the Vault via CLI 
+#### Intialize the Vault via CLI 
 
-$ vault operator init
+`$ vault operator init`
 
 ```bash
 (main) expert@expert-cws:~$ vault operator init
@@ -246,17 +246,17 @@ It is also a good practice to save the root token into the environment variable 
 
 `$ export VAULT_TOKEN=s.AAEWXJTWImihghhsrPwU7B1R`
 
-### Unseal the Vault via command line 
+#### Unseal the Vault via command line 
 
-__This is demo purpose only and I will re-initialize my keys for security reason.__
+__Showing this as demo purpose only and I will re-initialize my keys for security reason.__
 
 As discussed before, we require minimum 3 keys to reconstruct master key and same required to unseal Vault.
 
-Run the following command 3 times with 3 keys.
+Run the following command 3 times and enter a different key each time.
 
 `$ vault operator unseal`
 
-or 
+Or run the following command 3 times with 3 different keys.
 
 `$ vault operator unseal GxDPlRVIiQK0RzrraaafM2YvdM5vmlr41w3Dd35KAeds`
 
@@ -312,7 +312,7 @@ On the last key output, you can see `Sealed   false` and `Threshold   3` which m
 
 You can now login to Vault either via Web UI or CLI. 
 
-Here what is looks like when you login via Web UI, you need to select 'Token' for the 'Method' and enter the root token we generated when we initialized the Vault in the earlier step.  
+Here is what it looks like when you login via Web UI, you need to select 'Token' for the 'Method' and enter the root token we generated when we initialized the Vault in the earlier step.  
 
 ![App Screenshot](images/Login_Vault.png) 
 
@@ -320,6 +320,7 @@ __To Login via CLI__
 
 Simply type `vault login`, it will prompt you for the token, enter the root token we generated when we initialized the Vault before.
 
+```bash
 (main) expert@expert-cws:~$ vault login
 Token (will be hidden): 
 Success! You are now authenticated. The token information displayed below
@@ -336,16 +337,21 @@ token_policies       ["root"]
 identity_policies    []
 policies             ["root"]
 (main) expert@expert-cws:~$ 
+```
 
-We now successfully brought the Vault up and running, next step is to create your first secret. 
+We now have successfully brought the Vault service up and running, next step is to create your first secret. Check out [secrets_with_vault.md](secrets_with_vault.md).
 
-Here is how the initial dashboard looks like, before you create any new secrets.
+There is another mode available for Vault, which I haven't discussed here, it is called High Availability (HA) Mode but you can find the details [here](https://www.vaultproject.io/docs/concepts/ha).
+
+Here is how the initial dashboard looks like in Vault UI, before you create any new secrets.
 
 ![App Screenshot](images/Vault_dashboard.png) 
 
-Secret are nothing but the user/device or system passwords, keys, tokens etc. By using vault, you can manage your secret in devops fasion, where you can include them in your scripts and simply calling them via Vault APIs. 
+#### HVAC (HashiCorp Vault API client)
 
-HVAC (HashiCorp Vault API client) library is created by Hashicorp for Python3.x which can be installed via  `pip install hvac`. Read the hvac documentation [here](https://hvac.readthedocs.io/en/stable/overview.html).
+HVAC library is created by Hashicorp for Python3.x which can be installed via pip `pip install hvac`. Read the hvac documentation [here](https://hvac.readthedocs.io/en/stable/overview.html).
+
+I have created a folder for python scripts with vault, see the folder [vault-python-scripts](vault-python-scripts).
 
 ## Author
 
