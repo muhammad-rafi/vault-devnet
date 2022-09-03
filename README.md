@@ -30,6 +30,23 @@ You may also run the Vault in Dev envrionment mode, which will provide you the u
 $ vault server -dev
 ```
 
+### Running Vault via Docker 
+
+If you have a docker installed on your system and you do not want additional service to be runnig, you can run the Vault via docker .
+
+- To run the vault server in dev mode
+```bash
+$ docker pull vault
+$ docker run -d -rm --name=dev-vault --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=my-secret-token' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' -p 8200:8200 vault
+```
+
+- To run the vault server in dev mode
+```bash
+$ docker run -d -rm --name=vault-server --cap-add=IPC_LOCK -e 'VAULT_LOCAL_CONFIG={"backend": {"file": {"path": "/vault/file"}}, "default_lease_ttl": "168h", "max_lease_ttl": "720h"}' e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' -p 8200:8200 vault server
+```
+
+For more information: https://hub.docker.com/_/vault
+
 ### Running Vault as a Service
 
 Create a `vault.service` file and place it into the `/etc/systemd/system`
@@ -314,7 +331,7 @@ You can now login to Vault either via Web UI or CLI.
 
 Here is what it looks like when you login via Web UI, you need to select 'Token' for the 'Method' and enter the root token we generated when we initialized the Vault in the earlier step.  
 
-![App Screenshot](images/Login_Vault.png) 
+![App Screenshot](images/Vault_Login.png)
 
 __To Login via CLI__
 

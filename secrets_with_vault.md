@@ -33,6 +33,9 @@ Success! Enabled the kv-v2 secrets engine at: dev-creds/
 (main) expert@expert-cws:~$ 
 ```
 
+You can also enable secret following for version 2 kv.
+`$ vault secrets enable -path=prod-creds -version=2 kv`
+
 Check the if the paths are created for both versions
 
 ```bash
@@ -209,6 +212,11 @@ $ vault kv delete lab-creds/iosxr
 $ vault kv delete -path=database-creds kv
 ```
 
+As Kv-v2 uses the secret versioning, so you can destroy the different versions of the secret e.g. destroying the secret version 3.
+```
+$ vault kv destroy lab-creds/iosxr -versions=3
+```
+
 ### kv secrets engine - version 1 vs 2
 
 Key/Value secrets engine has version 1 and 2. The difference is that v2 provides versioning of secrets and v1 does not.
@@ -237,6 +245,11 @@ In addition, KV v2 has additional subcommands that are not available for KV v1.
 
 
 ## References
+
+[Vault Authentication](https://learn.hashicorp.com/tutorials/vault/getting-started-authentication)
+
+[Vault Commands (CLI)](https://www.vaultproject.io/docs/commands)
+
 [Starting the Dev Server](https://learn.hashicorp.com/tutorials/vault/getting-started-dev-server?in=vault/getting-started)
 
 [Secrets Engines](https://learn.hashicorp.com/tutorials/vault/getting-started-secrets-engines)

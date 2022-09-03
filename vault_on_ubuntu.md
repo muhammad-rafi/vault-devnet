@@ -134,7 +134,7 @@ $ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /opt/vault/tl
 
 *METHOD_2: To generate the self-signed certificate with no prompts*
 ```bash
-openssl req -out ca-cert.crt -new -keyout ca-key.key -newkey rsa:2048 -nodes -sha256 -x509 -subj "/O=HashiCorp/CN=Vault" -addext "subjectAltName=IP:0.0.0.0,DNS:localhost" -days 365
+openssl req -out ca-cert.crt -new -keyout ca-key.key -newkey rsa:2048 -nodes -sha256 -x509 -subj "/O=HashiCorp/CN=Vault" -addext "subjectAltName=IP:127.0.0.1,DNS:localhost" -days 365
 ```
 
 *METHOD_3: To generate the self-signed certificate using the `.conf` file and `.pem` extension*
@@ -162,7 +162,7 @@ commonName                  = localhost
 subjectAltName = @alt_names
 
 [alt_names]
-IP.1 = 0.0.0.0
+IP.1 = 127.0.0.1
 DNS.1   = localhost
 ```
 __Note: I have set the parameters as I needed, but you can choose your own parameter values as you require.__
@@ -185,7 +185,7 @@ You need to set below environment variable with `https`
 export VAULT_ADDR=<your-vault-server-ip-or-dns>
 export VAULT_API_ADDR=<your-vault-server-ip-or-dns>
 export VAULT_CACERT=<path_to_cacert>
-export VAULT_SKIP_VERIFY=false # this is default, unless you changed it to `true` before.
+export VAULT_SKIP_VERIFY=false # this should be a default, unless you changed it to `true` before.
 ```
 
 examples:
@@ -233,6 +233,8 @@ $ vault login -tls-skip-verify
 
 *or you can export the environment variable* 
 `export VAULT_SKIP_VERIFY=true`
+
+There is also currently a bug for this `VAULT_SKIP_VERIFY` as it doesn't work as expected, checkout [link](https://github.com/hashicorp/vault/issues/14316) as I have been caught by this bug as well.
 
 __This is only for lab or testing environment, however you should use proper signed certifcates in the production environment.__
 
