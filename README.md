@@ -388,8 +388,11 @@ _https://developer.cisco.com/codeexchange/github/repo/CiscoDevNet/vault_
 
 _https://hvac.readthedocs.io/en/stable/index.html_
 
+_https://www.vaultproject.io/docs/concepts/dev-server_
 
+_https://www.vaultproject.io/api-docs_
 
+_https://registry.terraform.io/providers/hashicorp/vault/3.8.2_
 
 
 

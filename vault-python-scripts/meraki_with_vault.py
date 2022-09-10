@@ -3,6 +3,7 @@ import json
 import hvac
 
 # This script is using 'localhost' as Vault Server IP and default mount point of 'secret'
+# with KV Version 2.
 
 client = hvac.Client(url='https://localhost:8200') 
 read_response = client.secrets.kv.read_secret_version(path='meraki-secrets')  

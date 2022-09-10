@@ -5,14 +5,18 @@ from pprint import pprint
 
 urllib3.disable_warnings()  
 
-# This script is using 'localhost' as Vault Server IP and default mount point of 'secret'
+# dnac_username = 'devnetuser'
+# dnac_password = 'Cisco123!'
+
+# This script is using 'localhost' as Vault Server IP and default mount point of 'secret' 
+# with KV Version 2.
 
 client = hvac.Client(url='https://localhost:8200') 
 read_response = client.secrets.kv.read_secret_version(path='dnac-secrets')  
 
 dnac_ip = "sandboxdnac.cisco.com"
-username = read_response['data']['data']['username'] 
-password = read_response['data']['data']['password'] 
+username = read_response['data']['data']['dnac_username'] 
+password = read_response['data']['data']['dnac_password'] 
 
 # Get the DNA API TOKEN 
 url = "https://{}/dna/system/api/v1/auth/token".format(dnac_ip)

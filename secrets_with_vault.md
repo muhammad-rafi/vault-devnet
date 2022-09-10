@@ -111,6 +111,11 @@ curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://
 (main) expert@expert-cws:~$
 ```
 
+```bash
+(main) expert@expert-cws:~$ vault secrets enable -path=cisco-sandboxes -output-curl-string -version=2 kv 
+curl -X POST -H "X-Vault-Request: true" -H "X-Vault-Token: $(vault print token)" -d '{"type":"kv","description":"","config":{"options":null,"default_lease_ttl":"0s","max_lease_ttl":"0s","force_no_cache":false},"local":false,"seal_wrap":false,"external_entropy_access":false,"options":{"version":"2"}}' https://localhost:8200/v1/sys/mounts/cisco-sandboxes
+```
+
 Use these output of the cURL command and a run GET API request to retrieve the secrets. which can be useful if you are writing a python scripts and use this API call to retrieve the secrets and use them to access the device. 
 
 kv version 1 API call 
@@ -253,6 +258,8 @@ In addition, KV v2 has additional subcommands that are not available for KV v1.
 [Starting the Dev Server](https://learn.hashicorp.com/tutorials/vault/getting-started-dev-server?in=vault/getting-started)
 
 [Secrets Engines](https://learn.hashicorp.com/tutorials/vault/getting-started-secrets-engines)
+
+[KV Secrets Engine (API)](https://www.vaultproject.io/api-docs/secret/kv)
 
 [KV Secrets Engine](https://www.vaultproject.io/docs/secrets/kv)
 
