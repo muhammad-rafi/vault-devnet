@@ -27,6 +27,40 @@ client = hvac.Client(url=vault_url, token=vault_token, verify=cacert)
 # print(read_response['data']['data']['password'])
 # print(dir(client.secrets.kv))
 
+
+# # List KV Secret Engines with the mount points
+# secrets_engines_list = client.sys.list_mounted_secrets_engines()['data']
+# # print(secrets_engines_list.keys())
+# for secret_engine in secrets_engines_list:
+#     print(secret_engine)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Create, Delete and List kv Secret Engines
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# # Enable new kv1 Secret Engine 'test-kv'
+# create_secrets_engine = client.sys.enable_secrets_engine(backend_type='kv',
+#                                  path='test-kv',
+#                                 )
+# print(create_secrets_engine)
+
+# # Disable Secret Engine 'test-kv'
+# delete_secret_engine = client.sys.disable_secrets_engine(
+#                         path='test-kv2',
+#                         )
+# print(delete_secret_engine.status_code)
+
+# # Enable new kv2 Secret Engine 'test-kv2'
+# create_secret_engine = client.sys.enable_secrets_engine(
+#                                 backend_type='kv',
+#                                 options={"version": 2},
+#                                 path='test-kv2', 
+#                                 )
+# # print(dir(create_secret_engine))
+# if create_secret_engine.status_code == 204: 
+#     print(f"kv2 Secret Engine has been enabled")
+
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # When you use the default mount point of 'secret' with KV version 1     #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -107,9 +141,9 @@ client = hvac.Client(url=vault_url, token=vault_token, verify=cacert)
 # secret_engine_config = client.secrets.kv.v2.configure(max_versions=10, mount_point='dev-creds',)
 # print(secret_engine_config)
 
-# Read kv secret engine mount point 'dev-creds' configuration
-read_secret_engine = client.secrets.kv.v2.read_configuration(mount_point='dev-creds',)
-print(read_secret_engine)
+# # Read kv secret engine mount point 'dev-creds' configuration
+# read_secret_engine = client.secrets.kv.v2.read_configuration(mount_point='dev-creds',)
+# print(read_secret_engine)
 
 # Create a k/v pair secret under path: dev-creds/demo-creds
 create_response = client.secrets.kv.v2.create_or_update_secret(

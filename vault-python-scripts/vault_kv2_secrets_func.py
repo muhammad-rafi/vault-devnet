@@ -31,21 +31,50 @@ def vault_connect(vault_url, vault_token, verify=False):
                          verify=verify)
     return client 
 
-
-def create_kv2_secret_engine(client, max_ver, mount_point):
+def list_secrets_engines(client):
     """
-    Creates new KV secret engine with mount point name provided.
+    List KV secret engine with mount points.
 
     :param hvac_client client: client to connect with Vault
-    :param max_ver int: maximum versions of secret can be created 
-    :param str mount_point: custom mount point to be created
     """
     
-    # need to correct this, please ignore for now.
-    # response = client.secrets.kv.v2.configure(max_versions=max_ver, mount_point=mount_point,)
-    # return response
-    pass
+    secrets_engines_list = client.sys.list_mounted_secrets_engines()['data']
+    for secret_engine in secrets_engines_list:
+        return secret_engine
 
+
+def enable_kv2_secret_engine(client, mount_point):
+    """
+    Creates new KV2 secret engine with mount point name provided.
+
+    :param hvac_client client: client to connect with Vault
+    :param str mount_point: custom mount point to be created
+    """
+    create_secret_engine = client.sys.enable_secrets_engine(
+                                    backend_type='kv',
+                                    options={"version": 2},
+                                    path=mount_point, 
+                                    )
+    if create_secret_engine.status_code == 204: 
+        return f"kv2 Secret Engine has been enabled with the mount point {mount_point}"
+
+
+def disable_kv2_secret_engine(client, mount_point):
+    """
+    Delete KV2 secret engine with mount point name provided.
+
+    :param hvac_client client: client to connect with Vault
+    :param str mount_point: mount point to be deleted.
+    """
+    
+    delete_secret_engine = client.sys.disable_secrets_engine(
+                            path=mount_point,
+                            )
+    
+    if delete_secret_engine.status_code == 204: 
+        return f"kv2 Secret Engine {mount_point} has been disabled."
+    
+    
 def read_kv2_secret(client, path, mount_point=None):
     """
     Returns the infromation for the secrets for the path provided.
