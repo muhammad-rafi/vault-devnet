@@ -122,7 +122,7 @@ To enable the TLS on your vault server, the process will be same as above except
 
 ### Generate self-signed CA certificate and the key
 
-To enable the HTTPS, you first need to generate .cert and .key (or .pem) files by using following command and place them to the "/opt/vault/tls/" directory which we created in earlier steps above if you have not created this directory, you can create now.  
+To enable the HTTPS, you first need to generate .crt and .key (or .pem) files by using the following commands and place them in to the "/opt/vault/tls/" directory which we created in earlier steps above, if you have not created this directory, you can create now.  
 
 I have mentioned three methods to create self-singed certificate, you can choose whichever you like.
 
